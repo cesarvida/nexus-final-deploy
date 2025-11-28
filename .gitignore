@@ -1,0 +1,12 @@
+# Archivos de sistema y claves secretas
+.env
+.DS_Store
+__pycache__/
+*.pyc
+
+# Carpetas gigantes que se reinstalan solas
+node_modules/
+venv/
+.next/
+dist/
+build/
