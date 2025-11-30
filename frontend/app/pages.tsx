@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import dynamic from "next/dynamic"; // Importación especial
 import { 
   UploadCloud, FileText, CheckCircle2, Cpu, 
   LayoutDashboard, Settings, LogOut, Clock, Trash2, 
@@ -9,14 +8,12 @@ import {
 } from "lucide-react";
 
 export default function Home() {
-  // --- ESTADO DE MONTAJE ---
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true); // Esto confirma que el navegador está listo
+    setIsMounted(true); 
   }, []);
 
-  // --- ESTADOS DE LA APP ---
   const [activeTab, setActiveTab] = useState("dashboard"); 
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -25,10 +22,8 @@ export default function Home() {
   const [dragActive, setDragActive] = useState(false);
   const [serverStatus, setServerStatus] = useState("checking");
 
-  // URL (Asegúrate de que esta es la correcta de Render)
   const API_URL = "https://nexus-backend-f7p1.onrender.com"; 
 
-  // --- LOGICA ---
   const fetchHistory = async () => {
     try {
       const res = await fetch(`${API_URL}/history`);
@@ -69,7 +64,7 @@ export default function Home() {
       try {
         data = JSON.parse(textResponse);
       } catch (e) {
-        throw new Error("El servidor tardó demasiado o devolvió un error. Intenta con un PDF más pequeño.");
+        throw new Error("El servidor tardó demasiado. Intenta con un PDF más pequeño.");
       }
 
       if (data.error) throw new Error(data.detail);
@@ -114,13 +109,11 @@ export default function Home() {
   const handleDrag = (e: any) => { e.preventDefault(); e.stopPropagation(); setDragActive(e.type === "dragenter" || e.type === "dragover"); };
   const handleDrop = (e: any) => { e.preventDefault(); e.stopPropagation(); setDragActive(false); if (e.dataTransfer.files?.[0]) setFile(e.dataTransfer.files[0]); };
 
-  // --- PROTECCIÓN FINAL ---
-  if (!isMounted) return <div className="flex h-screen items-center justify-center bg-gray-50 text-slate-400">Cargando Nexus AI...</div>;
+  // --- SOLUCIÓN DEL ERROR: Devolver un div vacío en lugar de null ---
+  if (!isMounted) return <div />;
 
   return (
-    <div className="flex h-screen bg-gray-50 font-sans text-slate-900" suppressHydrationWarning={true}>
-      
-      {/* SIDEBAR */}
+    <div className="flex h-screen bg-gray-50 font-sans text-slate-900">
       <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col justify-between shadow-sm z-10">
         <div className="p-6">
           <div className="flex items-center gap-2 mb-10">
@@ -129,13 +122,12 @@ export default function Home() {
           </div>
           <nav className="space-y-2">
             <button onClick={() => setActiveTab("dashboard")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all ${activeTab === 'dashboard' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-500 hover:bg-gray-50'}`}><LayoutDashboard size={20} /> Generar Apuntes</button>
-            <button onClick={() => setActiveTab("history")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all ${activeTab === 'history' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-500 hover:bg-gray-50'}`}><Clock size={20} /> Historial</button>
+            <button onClick={() => setActiveTab("history")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all ${activeTab === 'history' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-500 hover:bg-gray-50'}`}><Clock size={20} /> Mis Documentos</button>
             <button onClick={() => setActiveTab("settings")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all ${activeTab === 'settings' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-500 hover:bg-gray-50'}`}><Settings size={20} /> Sistema</button>
           </nav>
         </div>
       </aside>
 
-      {/* MAIN */}
       <main className="flex-1 overflow-auto p-8 md:p-12 bg-slate-50/50">
         {activeTab === "dashboard" && (
           <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in duration-500">
